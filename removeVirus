@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+from os import system , listdir, getcwd, walk
+import os
+import subprocess
+import json 
+import datetime
+import shutil
+
+today_report = {}
+
+    
+current_directory = getcwd()
+
+def govaxin(input_file):
+
+    backup_file =  input_file.replace('.ma', '.ma_bak')
+    shutil.copy(input_file, backup_file)
+    # Open the file
+    with open(input_file, "r") as f:
+        # Read the file line by line
+    lines = iter(lines)
+
+    # Open the file in write mode
+    with open(input_file, "w") as f:
+        # Iterate over the lines
+        for line in lines:
+            # If the line contains the word "vaccine", skip it and the next 10 lines
+            if "vaccine" in line:
+                today_report.update({input_file : "Virus Detected"})
+                for i in range(12):
+                    next(lines, None)
+            # Write the line to the file
+            else:
+                today_report.update({input_file : "Virus Not Detected"})
+                f.write(line)
+
+
+
+for dirname, dirs, files in walk(current_directory):
+    for filename in files:
+        if filename.endswith(".ma"):
+            fullfilename = os.path.join(dirname,filename)
+            govaxin(fullfilename)
+
+
+
+report_name = "Vaccine_report-" + datetime.datetime.now().strftime("%Y-%m-%d")
+report_folder = "/PATH/TO/FOLDER"
+current_record = report_folder + report_name
+print(today_report)
+
+with open(current_record, "w") as report:
+    json.dump(today_report,report, indent = 6 )
